@@ -1,0 +1,13 @@
+<form [formGroup]="searchForm">
+    <mat-form-field class="w-250">
+        <mat-label class="label"
+                   data-element="label">Поиск</mat-label>
+        <input type="text"
+               matInput
+               formControlName="searchText"
+               data-element="input">
+        <mat-hint *ngIf="hasError"
+                  class="error"
+                  data-element="error">В строке поиска должно быть более 2-х символов</mat-hint>
+    </mat-form-field>
+</form>

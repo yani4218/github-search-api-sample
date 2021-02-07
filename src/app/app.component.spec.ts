@@ -1,35 +1,78 @@
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { of, throwError } from 'rxjs';
+
+import { ContentComponent } from './shared/content';
+import { DataSourceService, IGitHubRepo } from './shared/data-sorce';
+import { SearchComponent } from './shared/search';
+import { TitleComponent } from './shared/title';
+
+import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  });
+    let spectator: Spectator<AppComponent>;
+    let service: DataSourceService;
+    let dialog: MatDialog;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    const mockData: IGitHubRepo[] = [{ id: 1, name: 'some name', stargazers_count: 1 }];
 
-  it(`should have as title 'github-search-api-sample'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('github-search-api-sample');
-  });
+    const createComponent = createComponentFactory({
+        component: AppComponent,
+        imports: [AppModule],
+        providers: [
+            { provide: MAT_DIALOG_DATA, useValue: {} },
+            { provide: MatDialogRef, useValue: {} }
+        ],
+        declareComponent: false, // Defaults to true
+    });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('github-search-api-sample app is running!');
-  });
+    beforeEach(() => {
+        service = TestBed.inject(DataSourceService);
+        spyOn(service, 'getRepos').and.returnValue(of(mockData));
+
+        dialog = TestBed.inject(MatDialog);
+        spyOn(dialog, 'open');
+
+        spectator = createComponent();
+    });
+
+    it('should create', () => {
+        expect(spectator.component).toBeTruthy();
+        expect(spectator.debugElement).toBeTruthy();
+    });
+
+    it('содержит title компонент.', () => {
+        expect(spectator.query(TitleComponent)).toBeTruthy();
+    });
+
+    it('содержит search компонент.', () => {
+        expect(spectator.query(SearchComponent)).toBeTruthy();
+    });
+
+    describe('компонент с контентом', () => {
+        it('содержит контент компонент.', () => {
+            expect(spectator.query(ContentComponent)).toBeTruthy();
+        });
+
+        it('инпут контент компонента.', () => {
+            spectator.component.onSearch('');
+            spectator.detectChanges();
+
+            expect(spectator.query(ContentComponent)?.repos).toEqual(mockData);
+        });
+
+        it('открывается диалог с ошибкой.', () => {
+            service.getRepos = jasmine.createSpy().and.returnValue(
+                throwError(new HttpErrorResponse({ status: 404, error: { message: 'test error' } }))
+            );
+
+            spectator.component.onSearch('');
+
+            expect(service.getRepos).toHaveBeenCalledWith('');
+            expect(dialog.open).toHaveBeenCalled();
+        });
+    });
 });

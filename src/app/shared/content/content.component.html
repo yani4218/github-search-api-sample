@@ -1,0 +1,36 @@
+<table class="mat-elevation-z8"
+       *ngIf="repos?.length; else emptyList"
+       mat-table
+       [dataSource]="repos"
+       data-element="list">
+
+    <!-- Name column -->
+    <ng-container matColumnDef="name">
+        <th class="w-200 th-center"
+            mat-header-cell
+            *matHeaderCellDef> Name </th>
+        <td class="w-200 th-left"
+            mat-cell
+            *matCellDef="let element"> {{element?.name}} </td>
+    </ng-container>
+
+    <!-- Stars count column -->
+    <ng-container matColumnDef="stargazers_count">
+        <th class="w-200 th-center"
+            mat-header-cell
+            *matHeaderCellDef> Stars count </th>
+        <td class="w-200 th-center"
+            mat-cell
+            *matCellDef="let element"> {{element?.stargazers_count}} </td>
+    </ng-container>
+
+    <tr mat-header-row
+        *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+        *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<ng-template #emptyList>
+    <div class="empty"
+         data-element="empty-list"> Пустой список.</div>
+</ng-template>
