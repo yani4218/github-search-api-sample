@@ -14,13 +14,11 @@ import { ErrorComponent } from './shared/error/error.component';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    // tslint:disable-next-line:variable-name
     private _gitReposSubscription: Subscription = new Subscription();
 
     repos: IGitHubRepo[] = [];
 
     constructor(
-        // tslint:disable-next-line:variable-name
         private _dataSource: DataSourceService,
         public matDialog: MatDialog
     ) { }
@@ -32,6 +30,7 @@ export class AppComponent {
 
         if (!search) {
             this.repos = [];
+            return;
         }
 
         this._gitReposSubscription = this.getReposList(search);

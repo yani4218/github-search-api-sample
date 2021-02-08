@@ -1,6 +1,8 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { TestBed } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 import { of, throwError } from 'rxjs';
 
 import { ContentComponent } from './shared/content';
@@ -10,7 +12,6 @@ import { TitleComponent } from './shared/title';
 
 import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
-import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AppComponent', () => {
     let spectator: Spectator<AppComponent>;
@@ -57,8 +58,14 @@ describe('AppComponent', () => {
             expect(spectator.query(ContentComponent)).toBeTruthy();
         });
 
-        it('инпут контент компонента.', () => {
+        it('поле поиска пустое запрос не отправляется', () => {
             spectator.component.onSearch('');
+
+            expect(service.getRepos).not.toHaveBeenCalled();
+        });
+
+        it('инпут контент компонента.', () => {
+            spectator.component.onSearch('test');
             spectator.detectChanges();
 
             expect(spectator.query(ContentComponent)?.repos).toEqual(mockData);
@@ -69,9 +76,9 @@ describe('AppComponent', () => {
                 throwError(new HttpErrorResponse({ status: 404, error: { message: 'test error' } }))
             );
 
-            spectator.component.onSearch('');
+            spectator.component.onSearch('test');
 
-            expect(service.getRepos).toHaveBeenCalledWith('');
+            expect(service.getRepos).toHaveBeenCalledWith('test');
             expect(dialog.open).toHaveBeenCalled();
         });
     });
