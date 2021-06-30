@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { IGitHubRepo, IList } from './entities';
 
 @Injectable()
-export class DataSourceService {
+export class GithubDataService {
     private url = 'https://api.github.com/search/repositories';
 
     // tslint:disable-next-line:variable-name

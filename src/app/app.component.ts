@@ -4,7 +4,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 
 import { Subscription } from 'rxjs';
 
-import { DataSourceService, IGitHubRepo } from './shared/data-sorce';
+import { GithubDataService, IGitHubRepo } from './shared/github-data';
 import { ErrorComponent } from './shared/error/error.component';
 
 @UntilDestroy({ checkProperties: true })
@@ -19,7 +19,7 @@ export class AppComponent {
     repos: IGitHubRepo[] = [];
 
     constructor(
-        private _dataSource: DataSourceService,
+        private _githubSource: GithubDataService,
         public matDialog: MatDialog
     ) { }
 
@@ -37,7 +37,7 @@ export class AppComponent {
     }
 
     private getReposList(search: string): Subscription {
-        return this._dataSource.getRepos(search)
+        return this._githubSource.getRepos(search)
             .subscribe(
                 repos => this.repos = repos,
                 errorResp => this.openErrorDialog(errorResp?.error?.message)

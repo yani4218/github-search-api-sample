@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { IGitHubRepo } from '../data-sorce/entities/github-repos.interface';
+import { IGitHubRepo } from '../github-data/entities/github-data.interface';
 
 @Component({
     selector: 'app-content',

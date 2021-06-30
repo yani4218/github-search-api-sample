@@ -1,5 +1,5 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
-import { IGitHubRepo } from '../data-sorce/entities/github-repos.interface';
+import { IGitHubRepo } from '../github-data/entities/github-data.interface';
 
 import { ContentModule } from './content.module';
 import { ContentComponent } from './content.component';

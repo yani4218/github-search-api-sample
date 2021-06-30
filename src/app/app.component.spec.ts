@@ -6,7 +6,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { of, throwError } from 'rxjs';
 
 import { ContentComponent } from './shared/content';
-import { DataSourceService, IGitHubRepo } from './shared/data-sorce';
+import { DataSourceService, IGitHubRepo } from './shared/github-data';
 import { SearchComponent } from './shared/search';
 import { TitleComponent } from './shared/title';
 

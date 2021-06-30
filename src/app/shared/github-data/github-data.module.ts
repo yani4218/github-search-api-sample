@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { DataSourceService } from './data-sorce.service';
+import { GithubDataService } from './github-data.service';
 
 @NgModule({
     imports: [
         CommonModule,
         HttpClientModule
     ],
-    providers: [DataSourceService]
+    providers: [GithubDataService]
 })
-export class DataSourceModule { }
+export class GithubDataModule { }

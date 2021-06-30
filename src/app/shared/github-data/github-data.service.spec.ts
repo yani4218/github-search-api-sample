@@ -1,10 +1,10 @@
 import { createHttpFactory, SpectatorHttp, HttpMethod } from '@ngneat/spectator';
 
-import { DataSourceService } from './data-sorce.service';
+import { GithubDataService } from './github-data.service';
 
 describe('DataSorceService', () => {
-    let spectator: SpectatorHttp<DataSourceService>;
-    const createHttp = createHttpFactory(DataSourceService);
+    let spectator: SpectatorHttp<GithubDataService>;
+    const createHttp = createHttpFactory(GithubDataService);
 
     beforeEach(() => spectator = createHttp());
 

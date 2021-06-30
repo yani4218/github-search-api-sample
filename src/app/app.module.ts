@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleModule } from './shared/title';
 import { SearchModule } from './shared/search/search.module';
 import { ContentModule } from './shared/content';
-import { DataSourceModule } from './shared/data-sorce';
+import { GithubDataModule } from './shared/github-data';
 
 import { AppComponent } from './app.component';
 import { ErrorModule } from './shared/error/error.module';
@@ -21,7 +21,7 @@ import { ErrorModule } from './shared/error/error.module';
         TitleModule,
         SearchModule,
         ContentModule,
-        DataSourceModule,
+        GithubDataModule,
         MatDialogModule,
         ErrorModule
     ],
