@@ -5,26 +5,24 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TitleModule } from './shared/title';
 import { SearchModule } from './shared/search/search.module';
-import { ContentModule } from './shared/content';
+import { GithubReposListModule } from './shared/github-repos-list';
 import { GithubDataModule } from './shared/github-data';
 
 import { AppComponent } from './app.component';
 import { ErrorModule } from './shared/error/error.module';
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        TitleModule,
-        SearchModule,
-        ContentModule,
-        GithubDataModule,
-        MatDialogModule,
-        ErrorModule
-    ],
-    bootstrap: [AppComponent]
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    TitleModule,
+    SearchModule,
+    GithubReposListModule,
+    GithubDataModule,
+    MatDialogModule,
+    ErrorModule,
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
