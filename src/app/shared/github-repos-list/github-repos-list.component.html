@@ -1,53 +1,57 @@
-<div class="mat-elevation-z8" *ngIf="repos?.items?.length; else emptyList">
-  <table
-    data-element="list"
-    mat-table
-    [dataSource]="repos.items"
-    matSort
-    (matSortChange)="onSortChange($event)"
-  >
-    <!-- Name column -->
-    <ng-container matColumnDef="name">
-      <th
-        class="w-200 th-center"
-        mat-header-cell
-        mat-sort-header
-        *matHeaderCellDef
-      >
-        Name
-      </th>
-      <td class="w-200 th-left" mat-cell *matCellDef="let element">
-        {{ element?.name }}
-      </td>
+<ng-container *ngIf="repos$ | async as data">
+  <div class="mat-elevation-z8" *ngIf="data?.length; else emptyList">
+    <table
+      data-element="list"
+      mat-table
+      [dataSource]="data"
+      matSort
+      (matSortChange)="onSortChange($event)"
+    >
+      <!-- Name column -->
+      <ng-container matColumnDef="name">
+        <th
+          class="w-200 th-center"
+          mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef
+        >
+          Name
+        </th>
+        <td class="w-200 th-left" mat-cell *matCellDef="let element">
+          {{ element?.name }}
+        </td>
+      </ng-container>
+
+      <!-- Stars count column -->
+      <ng-container matColumnDef="stargazers_count">
+        <th
+          class="w-200 th-center"
+          mat-header-cell
+          mat-sort-header
+          *matHeaderCellDef
+        >
+          Stars count
+        </th>
+        <td class="w-200 th-center" mat-cell *matCellDef="let element">
+          {{ element?.stargazers_count }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <ng-container *ngIf="paginator$ | async as paginator">
+      <mat-paginator
+        [pageIndex]="paginator.pageIndex"
+        [length]="totalItems$ | async"
+        [pageSize]="paginator.pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="getPage($event)"
+      ></mat-paginator>
     </ng-container>
-
-    <!-- Stars count column -->
-    <ng-container matColumnDef="stargazers_count">
-      <th
-        class="w-200 th-center"
-        mat-header-cell
-        mat-sort-header
-        *matHeaderCellDef
-      >
-        Stars count
-      </th>
-      <td class="w-200 th-center" mat-cell *matCellDef="let element">
-        {{ element?.stargazers_count }}
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-
-  <mat-paginator
-    [pageIndex]="currentPage"
-    [length]="repos?.total_count"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="pageSizeOptions"
-    (page)="getPage($event)"
-  ></mat-paginator>
-</div>
+  </div>
+</ng-container>
 
 <ng-template #emptyList>
   <div class="empty" data-element="empty-list">Пустой список.</div>

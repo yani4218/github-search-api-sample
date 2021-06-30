@@ -10,12 +10,14 @@ import { GithubDataModule } from './shared/github-data';
 
 import { AppComponent } from './app.component';
 import { ErrorModule } from './shared/error/error.module';
+import { AppStoreModule } from './shared/store';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AppStoreModule,
     TitleModule,
     SearchModule,
     GithubReposListModule,

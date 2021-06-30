@@ -1,12 +1,21 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
+import { Store } from '@ngrx/store';
+
+import { AppState } from '../store/app-store';
 
 import {
-  IGitHubRepo,
-  IList,
-} from '../github-data/entities/github-data.interface';
+  getGitHubDataList,
+  getGitHubDataListTotal,
+} from '../github-data/state/github-data.selectors';
+import {
+  githubListSetSotring,
+  getPaginator,
+  getSort,
+  githubListSetPagination,
+} from './state';
 
 @Component({
   selector: 'app-github-repos-list',
@@ -15,20 +24,20 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GithubReposListComponent {
-  @Input() repos: IList<IGitHubRepo>;
+  repos$ = this._store.select(getGitHubDataList);
+  totalItems$ = this._store.select(getGitHubDataListTotal);
+  paginator$ = this._store.select(getPaginator);
+  sort$ = this._store.select(getSort);
 
-  displayedColumns = ['name', 'stargazers_count'];
-  currentPage = 1;
-  pageSize = 10;
   pageSizeOptions = [5, 10, 20];
-
-  constructor() {}
+  displayedColumns = ['name', 'stargazers_count'];
+  constructor(private _store: Store<AppState>) {}
 
   getPage(page: PageEvent): void {
-    console.log(page);
+    this._store.dispatch(githubListSetPagination(page));
   }
 
   onSortChange(sort: Sort): void {
-    console.log(sort);
+    this._store.dispatch(githubListSetSotring(sort));
   }
 }

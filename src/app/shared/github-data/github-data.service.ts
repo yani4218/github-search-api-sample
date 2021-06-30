@@ -1,7 +1,10 @@
-import { IPagination } from '../github-repos-list/entites/pagination.interface';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
+
+import { PageEvent } from '@angular/material/paginator';
+
 import { IGitHubRepo, IList } from './entities';
 
 @Injectable()
@@ -13,7 +16,7 @@ export class GithubDataService {
 
   getRepos(
     search: string,
-    pagination: IPagination = { pageIndex: 1, pageSize: 10 }
+    pagination: PageEvent
   ): Observable<IList<IGitHubRepo>> {
     const params = new HttpParams()
       .set('q', search)
