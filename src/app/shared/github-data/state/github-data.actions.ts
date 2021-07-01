@@ -5,10 +5,7 @@ export const GITHUB_LIST_GET_DATA = '[Github List] Get Data';
 export const GITHUB_LIST_GET_DATA_SUCCESS = '[Github List] Get Data success';
 export const GITHUB_LIST_GET_DATA_FAILURE = '[Github List] Get Data failure';
 
-export const githubListGetData = createAction(
-  GITHUB_LIST_GET_DATA,
-  props<{ search: string }>()
-);
+export const githubListGetData = createAction(GITHUB_LIST_GET_DATA);
 
 export const githubListGetDataSuccess = createAction(
   GITHUB_LIST_GET_DATA_SUCCESS,

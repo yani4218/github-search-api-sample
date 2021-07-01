@@ -1,5 +1,5 @@
 {
   "hooks": {
-      "pre-push": "ng lint && ng build --prod"
+      "pre-push": "ng lint && npm test && ng build --prod"
   }
 }

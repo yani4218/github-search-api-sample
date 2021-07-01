@@ -6,9 +6,17 @@ import {
 
 import { GithubReposListModule } from './github-repos-list.module';
 import { GithubReposListComponent } from './github-repos-list.component';
+import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 describe('GithubReposListComponent', () => {
   let spectator: Spectator<GithubReposListComponent>;
+
+  class MockStore {
+    select = jasmine.createSpy().and.returnValue(of(mockData));
+    dispatch = jasmine.createSpy();
+    pipe = jasmine.createSpy().and.returnValue(of('success'));
+  }
 
   const mockData: IList<IGitHubRepo> = {
     incomplete_results: false,
@@ -19,6 +27,12 @@ describe('GithubReposListComponent', () => {
   const createComponent = createComponentFactory({
     component: GithubReposListComponent,
     imports: [GithubReposListModule],
+    providers: [
+      {
+        provide: Store,
+        useClass: MockStore,
+      },
+    ],
     declareComponent: false, // Defaults to true
   });
 
@@ -35,9 +49,4 @@ describe('GithubReposListComponent', () => {
     expect(spectator.query('[data-element="list"]')).toBeFalsy();
     expect(spectator.query('[data-element="empty-list"]')).toBeTruthy();
   });
-
-  //   it('отображаются данные.', () => {
-  //     expect(spectator.query('[data-element="empty-list"]')).toBeFalsy();
-  //     expect(spectator.query('[data-element="list"]')).toBeTruthy();
-  //   });
 });
