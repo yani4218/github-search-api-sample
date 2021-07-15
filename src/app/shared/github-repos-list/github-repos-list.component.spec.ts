@@ -42,8 +42,6 @@ describe('GithubReposListComponent', () => {
   });
 
   it('не отображаются данные.', () => {
-    console.log(spectator.query('[data-element="list"]'));
-    console.log(spectator.query('[data-element="empty-lis"]'));
     expect(spectator.query('[data-element="list"]')).toBeFalsy();
     expect(spectator.query('[data-element="empty-list"]')).toBeTruthy();
   });
