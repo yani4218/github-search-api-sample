@@ -1,3 +1,2 @@
-export * from './github-data.actions';
-export * from './github-data.reducers';
-export * from './github-data.selectors';
+export * from './search.actions';
+export * from './search.state';

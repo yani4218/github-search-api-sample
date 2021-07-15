@@ -1,13 +1,15 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
+
+import { of } from 'rxjs';
+import { NgxsModule, Store } from '@ngxs/store';
+
+import { GithubReposListModule } from './github-repos-list.module';
+import { GithubReposListComponent } from './github-repos-list.component';
+
 import {
   IGitHubRepo,
   IList,
 } from '../github-data/entities/github-data.interface';
-
-import { GithubReposListModule } from './github-repos-list.module';
-import { GithubReposListComponent } from './github-repos-list.component';
-import { of } from 'rxjs';
-import { Store } from '@ngrx/store';
 
 describe('GithubReposListComponent', () => {
   let spectator: Spectator<GithubReposListComponent>;
@@ -26,13 +28,7 @@ describe('GithubReposListComponent', () => {
 
   const createComponent = createComponentFactory({
     component: GithubReposListComponent,
-    imports: [GithubReposListModule],
-    providers: [
-      {
-        provide: Store,
-        useClass: MockStore,
-      },
-    ],
+    imports: [GithubReposListModule, NgxsModule.forRoot([])],
     declareComponent: false, // Defaults to true
   });
 
@@ -46,6 +42,8 @@ describe('GithubReposListComponent', () => {
   });
 
   it('не отображаются данные.', () => {
+    console.log(spectator.query('[data-element="list"]'));
+    console.log(spectator.query('[data-element="empty-lis"]'));
     expect(spectator.query('[data-element="list"]')).toBeFalsy();
     expect(spectator.query('[data-element="empty-list"]')).toBeTruthy();
   });

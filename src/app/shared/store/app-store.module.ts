@@ -1,19 +1,23 @@
 import { NgModule } from '@angular/core';
 
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
-import { reducers, metaReducers } from './app-store';
-import { GitHubListEffects } from '../github-data/state';
+import { GithubReposListState } from '../github-repos-list/state';
+import { GithubSearchState } from '../search/state';
+import { GithubDataState } from '../github-data/state';
 
 @NgModule({
-  declarations: [],
   imports: [
-    StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot([GitHubListEffects]),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
+    NgxsModule.forRoot([
+      GithubReposListState,
+      GithubSearchState,
+      GithubDataState,
+    ]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot({
+      key: [GithubReposListState, GithubSearchState],
     }),
   ],
 })

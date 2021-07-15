@@ -1,5 +1,5 @@
-<ng-container *ngIf="repos$ | async as data">
-  <div class="mat-elevation-z8" *ngIf="data?.length; else emptyList">
+<ng-container *ngIf="repos$ | async as data; else emptyList">
+  <div class="mat-elevation-z8" *ngIf="data?.length">
     <table
       data-element="list"
       mat-table

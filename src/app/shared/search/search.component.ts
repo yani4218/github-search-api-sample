@@ -6,18 +6,22 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { EMPTY, Observable } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   filter,
   first,
+  switchMap,
 } from 'rxjs/operators';
 
-import { Store } from '@ngrx/store';
+import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
+
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-import { AppState } from '../store/app-store';
-import { getGitHubDataSearch, githubDataSearchSetText } from './state';
+import { GithubSearchState } from './state/search.state';
+import { GithubDataSearchSetText } from './state/search.actions';
+import { GithubListGetData } from '../github-data/state';
 
 @UntilDestroy()
 @Component({
@@ -27,7 +31,8 @@ import { getGitHubDataSearch, githubDataSearchSetText } from './state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
-  private readonly search$ = this._store.select(getGitHubDataSearch);
+  @Select(GithubSearchState.getGitHubDataSearch)
+  search$: Observable<string>;
 
   errorMessage = '';
 
@@ -41,7 +46,10 @@ export class SearchComponent implements OnInit {
     return this.searchFormControls.searchText.invalid;
   }
 
-  constructor(private _store: Store<AppState>) {}
+  constructor(
+    private readonly _store: Store,
+    private readonly _actions: Actions
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -64,12 +72,17 @@ export class SearchComponent implements OnInit {
         filter((search: string) => search?.length > 2 || !search),
         distinctUntilChanged(),
         debounceTime(500),
+        switchMap((search) =>
+          !this.hasError
+            ? this._store.dispatch(new GithubDataSearchSetText(search))
+            : EMPTY
+        ),
+        switchMap((_) =>
+          this._actions.pipe(ofActionCompleted(GithubDataSearchSetText))
+        ),
+        switchMap((_) => this._store.dispatch(new GithubListGetData())),
         untilDestroyed(this)
       )
-      .subscribe((search) =>
-        !this.hasError
-          ? this._store.dispatch(githubDataSearchSetText({ search }))
-          : () => {}
-      );
+      .subscribe();
   }
 }

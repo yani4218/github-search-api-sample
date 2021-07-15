@@ -1,10 +1,10 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
+import { of } from 'rxjs';
+import { NgxsModule, Store } from '@ngxs/store';
+
 import { SearchModule } from './search.module';
 import { SearchComponent } from './search.component';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { fakeAsync } from '@angular/core/testing';
 
 describe('SearchComponent', () => {
   let spectator: Spectator<SearchComponent>;
@@ -17,13 +17,7 @@ describe('SearchComponent', () => {
 
   const createComponent = createComponentFactory({
     component: SearchComponent,
-    imports: [SearchModule],
-    providers: [
-      {
-        provide: Store,
-        useClass: MockStore,
-      },
-    ],
+    imports: [SearchModule, NgxsModule.forRoot([])],
     declareComponent: false, // Defaults to true
   });
 

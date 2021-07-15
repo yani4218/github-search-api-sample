@@ -19,9 +19,10 @@ export class GithubDataService {
     pagination: PageEvent
   ): Observable<IList<IGitHubRepo>> {
     const params = new HttpParams()
-      .set('q', search)
+      .set('q', search ? `${search}+in` : 'all')
       .set('page', `${pagination?.pageIndex}`)
       .set('per_page', `${pagination?.pageSize}`);
+
     return this._http.get<IList<IGitHubRepo>>(this.url, { params });
   }
 }
