@@ -21,7 +21,7 @@ describe('DataSorceService', () => {
       .getRepos('search', { pageIndex: 1, pageSize: 10, length: 0 })
       .subscribe();
     spectator.expectOne(
-      'https://api.github.com/search/repositories?q=search&page=1&per_page=10',
+      'https://api.github.com/search/repositories?q=search+in&page=1&per_page=10',
       HttpMethod.GET
     );
   });
