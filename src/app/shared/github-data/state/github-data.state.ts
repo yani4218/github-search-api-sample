@@ -6,7 +6,7 @@ import {
   StateContext,
   Store,
 } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 
 import { GithubDataService } from '../github-data.service';
@@ -18,11 +18,11 @@ import {
 } from './github-data.actions';
 
 import { IGitHubRepo, IList } from '../entities/github-data.interface';
-import { GithubSearchState } from '../../search/state';
 
 import { GithubReposListState } from '../../github-repos-list/state';
 import { PageEvent } from '@angular/material/paginator';
 import { Injectable } from '@angular/core';
+import { SearchStore } from '../../search/state';
 
 export interface GithubDataStateModel extends IList<IGitHubRepo> {}
 
@@ -38,15 +38,15 @@ export const initialState: IList<IGitHubRepo> = {
 })
 @Injectable()
 export class GithubDataState {
-  @Select(GithubSearchState.getGitHubDataSearch)
-  search$: Observable<string>;
+  search$: Observable<string> = this._searchStore.selectSearchText();
 
   @Select(GithubReposListState.getPaginator)
   paginator$: Observable<PageEvent>;
 
   constructor(
     private _store: Store,
-    private _githubSource: GithubDataService
+    private _githubSource: GithubDataService,
+    private _searchStore: SearchStore
   ) {}
 
   @Selector()
@@ -64,11 +64,11 @@ export class GithubDataState {
     ctx: StateContext<IList<IGitHubRepo>>,
     action: GithubListGetData
   ): Observable<any> {
-    return this.search$.pipe(
-      withLatestFrom(this.paginator$),
-      switchMap(([search, paginator]) =>
-        this._githubSource.getRepos(search, paginator)
-      ),
+    return this.paginator$.pipe(
+      withLatestFrom(this.search$),
+      switchMap(([paginator, search]) => {
+        return this._githubSource.getRepos(search, paginator);
+      }),
       map((data) => this._store.dispatch(new GithubListGetDataSuccess(data))),
       catchError((error: any) =>
         this._store.dispatch(new GithubListGetDataSuccess(error))

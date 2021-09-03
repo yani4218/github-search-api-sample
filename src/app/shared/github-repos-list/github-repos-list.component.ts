@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,8 @@ import {
   GithubListSetPagination,
   GithubListSetSotring,
 } from './state/github-repos-list.actions';
-import { switchMap } from 'rxjs/operators';
+import { catchError, switchMap } from 'rxjs/operators';
+import { SearchStore } from '../search/state';
 
 @UntilDestroy()
 @Component({
@@ -26,7 +27,9 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./github-repos-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GithubReposListComponent {
+export class GithubReposListComponent implements OnInit {
+  search$: Observable<string> = this._searchStore.selectSearchText();
+
   @Select(GithubDataState.getGitHubDataList)
   repos$: Observable<IGitHubRepo[]>;
 
@@ -44,8 +47,20 @@ export class GithubReposListComponent {
 
   constructor(
     private readonly _store: Store,
-    private readonly _actions: Actions
+    private readonly _actions: Actions,
+    private readonly _searchStore: SearchStore
   ) {}
+
+  ngOnInit(): void {
+    this.search$
+      .pipe(
+        catchError((e) => {
+          console.log(e);
+          return e;
+        })
+      )
+      .subscribe((v) => v);
+  }
 
   getPage(page: PageEvent): void {
     this._store

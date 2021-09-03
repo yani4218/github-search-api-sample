@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -15,13 +15,13 @@ import {
   switchMap,
 } from 'rxjs/operators';
 
-import { Actions, ofActionCompleted, Select, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-import { GithubSearchState } from './state/search.state';
-import { GithubDataSearchSetText } from './state/search.actions';
 import { GithubListGetData } from '../github-data/state';
+import { SearchStore } from './state/search.store';
+import { SearchActions } from './state';
 
 @UntilDestroy()
 @Component({
@@ -29,10 +29,10 @@ import { GithubListGetData } from '../github-data/state';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [SearchStore],
 })
 export class SearchComponent implements OnInit {
-  @Select(GithubSearchState.getGitHubDataSearch)
-  search$: Observable<string>;
+  search$: Observable<string> = this._searchStore.selectSearchText();
 
   errorMessage = '';
 
@@ -48,7 +48,7 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private readonly _store: Store,
-    private readonly _actions: Actions
+    private readonly _searchStore: SearchStore
   ) {}
 
   ngOnInit(): void {
@@ -72,14 +72,14 @@ export class SearchComponent implements OnInit {
         filter((search: string) => search?.length > 2 || !search),
         distinctUntilChanged(),
         debounceTime(500),
-        switchMap((search) =>
-          !this.hasError
-            ? this._store.dispatch(new GithubDataSearchSetText(search))
-            : EMPTY
-        ),
-        switchMap((_) =>
-          this._actions.pipe(ofActionCompleted(GithubDataSearchSetText))
-        ),
+        switchMap((search) => {
+          this._searchStore.dispatch({
+            type: SearchActions.setSearchText,
+            payload: search,
+          });
+
+          return of(search);
+        }),
         switchMap((_) => this._store.dispatch(new GithubListGetData())),
         untilDestroyed(this)
       )
